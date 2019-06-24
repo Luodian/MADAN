@@ -94,7 +94,7 @@ Make sure you choose the desired `src` and `tgt` and `datadir` before. In this p
 
 ### Our Model
 
-We release our adaptation model in the this [link](https://drive.google.com/open?id=1-sfRdJl-DNtgRGnuxjUuKWRXWv5earf2), you can use `scripts/eval_templates.sh` to evaluate its validity.
+We release our adaptation model in the this [link](https://www.dropbox.com/sh/69meeyx86lga6ix/AADRjiJkpPECwf2nMpoMWEdNa?dl=0), you can use `scripts/eval_templates.sh` to evaluate its validity.
 
 1. CycleGTA5_Dynamic_Semantic_Consistency
 2. CycleSYNTHIA_Dynamic_Semantic_Consistency
