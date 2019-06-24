@@ -13,7 +13,7 @@ We add following modules and achieve startling improvements.
    1. Sub-domain Aggregation Discriminator
    2. Cross-domain Cycle Discriminator
 
-While we implements [MDAN](https://openreview.net/pdf?id=ryDNZZZAW) for Semantic Segmentation task in Pytorch as our baseline comparasion.
+While we implements [Multiple Source Domain Adaptation with Adversarial Training of Neural Networks](https://arxiv.org/abs/1705.09684) for Semantic Segmentation task in Pytorch as one of our baselines for comparasion.
 
 ## Overall Structure
 
