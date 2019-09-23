@@ -3,7 +3,7 @@ import sys
 
 from torchvision.transforms import transforms
 
-sys.path.append('/root/MADAN')
+sys.path.append('/nfs/project/libo_iMADAN')
 import json
 import click
 import numpy as np

@@ -11,7 +11,7 @@ import torchvision
 from PIL import Image
 from tensorboardX import SummaryWriter
 
-sys.path.append('/root/MADAN')
+sys.path.append('/nfs/project/libo_iMADAN')
 
 from cycada.data.data_loader import get_fcn_dataset as get_dataset
 from cycada.models import get_model

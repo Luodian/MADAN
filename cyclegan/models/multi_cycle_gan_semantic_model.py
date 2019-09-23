@@ -8,7 +8,7 @@ from util.image_pool import ImagePool
 from . import networks
 from .base_model import BaseModel
 
-sys.path.append('/root/MADAN')
+sys.path.append('/nfs/project/libo_iMADAN')
 from cycada.models import get_model
 
 

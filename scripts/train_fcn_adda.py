@@ -12,7 +12,7 @@ import torch.nn.functional as F
 from tensorboardX import SummaryWriter
 from torch.autograd import Variable
 
-sys.path.append('/root/MADAN')
+sys.path.append('/nfs/project/libo_iMADAN')
 
 from cycada.data.adda_datasets import AddaDataLoader
 from cycada.models import get_model

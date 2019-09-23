@@ -9,7 +9,7 @@ from util.visualizer import save_images
 
 from data import CreateDataLoader
 
-sys.path.append("/root/MADAN")
+sys.path.append("/nfs/project/libo_i/MADAN")
 
 if __name__ == '__main__':
 	opt = TestOptions().parse()
@@ -48,11 +48,9 @@ if __name__ == '__main__':
 		
 		img_path = model.get_image_paths()
 		if i % 5 == 0:
-			print('processing (%04d)-th image... %s' % (i * opt.batchSize, img_path))
-		
+			print('processing (%04d)-th image...' % (i * opt.batchSize))
 		if 'mul' in opt.model:
 			save_images(webpage.get_image_dir(), visuals, img_path, aspect_ratio=opt.aspect_ratio, width=opt.display_winsize, multi_flag=True)
 		else:
 			save_images(webpage.get_image_dir(), visuals, img_path, aspect_ratio=opt.aspect_ratio, width=opt.display_winsize)
 
-# webpage.save()

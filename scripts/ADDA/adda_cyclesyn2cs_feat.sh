@@ -5,8 +5,8 @@ gpu=0,1,2,3
 ######################
 # loss weight params #
 ######################
-lr=2e-5
-momentum=0.9
+lr=1e-5
+momentum=0.99
 lambda_d=1
 lambda_g=0.1
 
@@ -17,23 +17,24 @@ export PYTHONPATH='/usr/bin/python3'
 ################
 # train params #
 ################
-max_iter=50000
-snapshot=2000
-batch=8
+max_iter=100000
+crop=800
+snapshot=5000
+batch=4
 
 weight_share='weights_shared'
-discrim='discrim_feat'
+discrim='discrim_score'
 
 ########
 # Data #
 ########
 src='cyclesynthia'
 tgt='cityscapes'
-data_flag='V4_SEM_Final'
+data_flag='V2_SEM'
 datadir='/nfs/project/libo_i/cycada/data/'
 
 
-resdir="results/${src}_to_${tgt}/adda_sgd_${weight_share}_nolsgan_${discrim}_${data_flag}"
+resdir="results/${src}_to_${tgt}/adda_sgd/${weight_share}_nolsgan_${discrim}"
 
 # init with pre-trained cyclegta5 model
 #model='drn26'
@@ -41,9 +42,9 @@ resdir="results/${src}_to_${tgt}/adda_sgd_${weight_share}_nolsgan_${discrim}_${d
 model='fcn8s'
 baseiter=100000
 
-base_model="/nfs/project/libo_i/cycada/results/cyclesynthia_to_cityscapes/adda_sgd_weights_shared_nolsgan_discrim_score_V4_SEM_Final/fcn8s/lr2e-5_ld1_lg0.1_momentum0.9_discrim_score/net-iter4000.pth"
-outdir="${resdir}/${model}/lr${lr}_ld${lambda_d}_lg${lambda_g}_momentum${momentum}_${discrim}"
 
+base_model="/nfs/project/libo_i/cycada/pretrained_models/cyclesynthia_V2_SEM_fcn8s-iter21000.pth"
+outdir="${resdir}/${model}/lr${lr}_crop${crop}_ld${lambda_d}_lg${lambda_g}_momentum${momentum}"
 echo $outdir
 echo $base_model
 
@@ -56,5 +57,5 @@ python3 scripts/train_fcn_adda.py ${outdir} \
     --lambda_d ${lambda_d} --lambda_g ${lambda_g} \
     --weights_init ${base_model} --model ${model} \
     --"${weight_share}" --${discrim} --no_lsgan \
-    --max_iter ${max_iter} --batch ${batch} \
-    --snapshot ${snapshot} --no_mmd_loss --small 1 --data_flag ${data_flag} --resize 500
+    --max_iter ${max_iter} --crop_size ${crop} --batch ${batch} \
+    --snapshot ${snapshot}

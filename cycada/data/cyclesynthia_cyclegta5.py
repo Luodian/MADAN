@@ -114,15 +114,15 @@ class CycleSYNTHIACycleGTA5(data.Dataset):
 	# In this case, you will generate fake_B_1 for cyclesynthia dataset and fake_B_2 for cyclegta5
 	def syn_label_path(self, filename):
 		if filename.endswith('_fake_B_1.png'):
-			return os.path.join("/root/MADAN/data/synthia", 'GT', 'parsed_LABELS', filename.replace('_fake_B_1.png', '.png'))
+			return os.path.join("/nfs/project/libo_i/MADAN/data/synthia", 'GT', 'parsed_LABELS', filename.replace('_fake_B_1.png', '.png'))
 		elif filename.endswith('_fake_B.png'):
-			return os.path.join("/root/MADAN/data/synthia", 'GT', 'parsed_LABELS', filename.replace('_fake_B.png', '.png'))
+			return os.path.join("/nfs/project/libo_i/MADAN/data/synthia", 'GT', 'parsed_LABELS', filename.replace('_fake_B.png', '.png'))
 	
 	def gta_label_path(self, filename):
 		if filename.endswith('_fake_B_2.png'):
-			return os.path.join('/root/MADAN/data/cyclegta5', 'labels', filename.replace('_fake_B_2.png', '.png'))
+			return os.path.join('/nfs/project/libo_i/MADAN/data/cyclegta5', 'labels', filename.replace('_fake_B_2.png', '.png'))
 		elif filename.endswith('_fake_B.png'):
-			return os.path.join('/root/MADAN/data/cyclegta5', 'labels', filename.replace('_fake_B.png', '.png'))
+			return os.path.join('/nfs/project/libo_i/MADAN/data/cyclegta5', 'labels', filename.replace('_fake_B.png', '.png'))
 	
 	def __getitem__(self, index, debug=False):
 		# we iteratively load images from cyclesynthia and cyclegta5

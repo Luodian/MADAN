@@ -3,7 +3,7 @@ import sys
 import torch.utils.data
 from data.base_data_loader import BaseDataLoader
 
-sys.path.append('/root/MADAN')
+sys.path.append('/nfs/project/libo_i/MADAN')
 from cycada.transforms import augment_collate
 
 
