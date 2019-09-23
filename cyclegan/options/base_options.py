@@ -29,7 +29,7 @@ class BaseOptions():
 		                         help='chooses how datasets are loaded. [unaligned | aligned | single]')
 		self.parser.add_argument('--model', type=str, default='cycle_gan',
 		                         help='chooses which model to use. cycle_gan, pix2pix, test')
-		self.parser.add_argument('--fcn_model', type=str, default='drn26',
+		self.parser.add_argument('--weights_model_type', type=str, default='drn26',
 		                         help='chooses which model to use. drn26, fcn8s')
 		self.parser.add_argument('--num_cls', default=19, type=int)
 		self.parser.add_argument('--max_epoch', default=20, type=int)

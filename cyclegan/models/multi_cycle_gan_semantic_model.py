@@ -85,8 +85,8 @@ class CycleGANSemanticModel(BaseModel):
 		                                  not opt.no_dropout, opt.init_type, self.gpu_ids)
 		
 		if opt.semantic_loss:
-			self.netPixelCLS_SYN = get_model("fcn8s", num_cls=opt.num_cls, pretrained=True, weights_init=opt.weights_syn)
-			self.netPixelCLS_GTA = get_model("drn26", num_cls=opt.num_cls, pretrained=True, weights_init=opt.weights_gta)
+			self.netPixelCLS_SYN = get_model(opt.weights_model_type, num_cls=opt.num_cls, pretrained=True, weights_init=opt.weights_syn)
+			self.netPixelCLS_GTA = get_model(opt.weights_model_type, num_cls=opt.num_cls, pretrained=True, weights_init=opt.weights_gta)
 			if len(self.gpu_ids) > 0:
 				assert (torch.cuda.is_available())
 				self.netPixelCLS_SYN.to(self.gpu_ids[0])
@@ -142,11 +142,7 @@ class CycleGANSemanticModel(BaseModel):
 			self.criterionGAN = networks.GANLoss(use_lsgan=not opt.no_lsgan).to(self.device)
 			self.criterionCycle = torch.nn.L1Loss()
 			self.criterionIdt = torch.nn.L1Loss()
-			# self.criterionCLS = torch.nn.modules.CrossEntropyLoss()
-			if opt.DSC:
-				self.criterionSemantic = torch.nn.KLDivLoss(reduction='mean')
-			else:
-				self.criterionSemantic = torch.nn.NLLLoss(weight=None, reduction='mean', ignore_index=255)
+			self.criterionSemantic = torch.nn.KLDivLoss(reduction='mean')
 			# initialize optimizers
 			self.optimizer_G_1 = torch.optim.Adam(itertools.chain(self.netG_A_1.parameters(), self.netG_B_1.parameters()),
 			                                      lr=opt.lr, betas=(opt.beta1, 0.999))
@@ -179,7 +175,6 @@ class CycleGANSemanticModel(BaseModel):
 				self.optimizers.append(self.optimizer_D_21)
 	
 	def set_input(self, input):
-		AtoB = self.opt.which_direction == 'AtoB'
 		self.real_A_1 = input['A_1'].to(self.device)
 		self.real_A_2 = input['A_2'].to(self.device)
 		self.real_B = input['B'].to(self.device)
@@ -228,9 +223,9 @@ class CycleGANSemanticModel(BaseModel):
 			self.pred_fake_B_GTA = self.netPixelCLS_GTA(self.fake_B_2)
 			_, pfB_GTA = self.pred_fake_B_GTA.max(1)
 	
-	def backward_D_basic(self, netD, real, fake, D3=False):
+	def backward_D_basic(self, netD, real, fake, SAD=False):
 		# Real
-		if D3 == False:
+		if SAD == False:
 			pred_real = netD(real)
 		else:
 			pred_real = netD(real.detach())
@@ -263,15 +258,15 @@ class CycleGANSemanticModel(BaseModel):
 		self.loss_D_B_2 = self.backward_D_basic(self.netD_B_2, self.real_A_2, fake_A_2)
 	
 	def backward_D(self, which_D):
-		if which_D == 'D3':
+		if which_D == 'SAD':
 			fake_B_1 = self.fake_B_1_pool.query(self.fake_B_1)
-			self.loss_D_3_1 = self.backward_D_basic(self.netD_3, self.fake_B_2, fake_B_1, D3=True)
+			self.loss_D_3_1 = self.backward_D_basic(self.netD_3, self.fake_B_2, fake_B_1, SAD=True)
 		
-		elif which_D == 'D21':
+		elif which_D == 'CCD_21':
 			fake_A_21 = self.fake_A_21_pool.query(self.fake_A_21)
 			self.loss_D_21 = self.backward_D_basic(self.netD_21, self.real_A_1, fake_A_21)
 		
-		elif which_D == 'D12':
+		elif which_D == 'CCD_12':
 			fake_A_12 = self.fake_A_12_pool.query(self.fake_A_12)
 			self.loss_D_12 = self.backward_D_basic(self.netD_12, self.real_A_2, fake_A_12)
 		
@@ -443,16 +438,16 @@ class CycleGANSemanticModel(BaseModel):
 		if opt.SAD:
 			self.set_requires_grad([self.netD_3], True)
 			self.optimizer_D_3.zero_grad()
-			self.backward_D('D3')
+			self.backward_D('SAD')
 			self.optimizer_D_3.step()
 		
 		if opt.CCD or opt.HF_CCD:
 			self.set_requires_grad([self.netD_21], True)
 			self.optimizer_D_21.zero_grad()
-			self.backward_D('D21')
+			self.backward_D('CCD_21')
 			self.optimizer_D_21.step()
 			
 			self.set_requires_grad([self.netD_12], True)
 			self.optimizer_D_12.zero_grad()
-			self.backward_D('D12')
+			self.backward_D('CCD_12')
 			self.optimizer_D_12.step()
