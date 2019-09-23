@@ -3,53 +3,8 @@ import os.path
 import numpy as np
 import torch.utils.data as data
 from PIL import Image
-
+from .util import classes, ignore_label, id2label
 from .data_loader import register_dataset_obj
-
-ignore_label = 255
-id2label = {0: ignore_label,
-            1: 10,
-            2: 2,
-            3: 0,
-            4: 1,
-            5: 4,
-            6: 8,
-            7: 5,
-            8: 13,
-            9: 7,
-            10: 11,
-            11: 18,
-            12: 17,
-            13: ignore_label,
-            14: ignore_label,
-            15: 6,
-            16: 9,
-            17: 12,
-            18: 14,
-            19: 15,
-            20: 16,
-            21: 3,
-            22: ignore_label}
-
-classes = ['road',
-           'sidewalk',
-           'building',
-           'wall',
-           'fence',
-           'pole',
-           'traffic light',
-           'traffic sign',
-           'vegetation',
-           'terrain',
-           'sky',
-           'person',
-           'rider',
-           'car',
-           'truck',
-           'bus',
-           'train',
-           'motorcycle',
-           'bicycle']
 
 @register_dataset_obj('bdds')
 class BDDS(data.Dataset):

@@ -13,7 +13,7 @@ We add following modules and achieve startling improvements.
    1. Sub-domain Aggregation Discriminator
    2. Cross-domain Cycle Discriminator
 
-While we implements [Multiple Source Domain Adaptation with Adversarial Training of Neural Networks](https://arxiv.org/abs/1705.09684) for Semantic Segmentation task in Pytorch as one of our baselines for comparasion.
+While we implements [MDAN](https://openreview.net/pdf?id=ryDNZZZAW) for Semantic Segmentation task in Pytorch as our baseline comparasion.
 
 ## Overall Structure
 
@@ -94,7 +94,7 @@ Make sure you choose the desired `src` and `tgt` and `datadir` before. In this p
 
 ### Our Model
 
-We release our adaptation model in the this [link](https://www.dropbox.com/sh/69meeyx86lga6ix/AADRjiJkpPECwf2nMpoMWEdNa?dl=0), you can use `scripts/eval_templates.sh` to evaluate its validity.
+We release our adaptation model in the `./models`, you can use `scripts/eval_templates.sh` to evaluate its validity.
 
 1. CycleGTA5_Dynamic_Semantic_Consistency
 2. CycleSYNTHIA_Dynamic_Semantic_Consistency
