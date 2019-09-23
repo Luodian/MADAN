@@ -58,9 +58,9 @@ class GTAVCityscapesDataset(BaseDataset):
 	def initialize(self, opt):
 		self.opt = opt
 		self.root = opt.dataroot
-		self.dir_A = os.path.join(opt.dataroot, 'gta5', 'images_600x1080')
+		self.dir_A = os.path.join(opt.dataroot, 'gta5', 'images')
 		self.dir_B = os.path.join(opt.dataroot, 'cityscapes', 'leftImg8bit')
-		self.dir_A_label = os.path.join(opt.dataroot, 'gta5', 'labels_600x1080')
+		self.dir_A_label = os.path.join(opt.dataroot, 'gta5', 'labels')
 		self.dir_B_label = os.path.join(opt.dataroot, 'cityscapes', 'gtFine')
 		
 		self.A_paths = make_dataset(self.dir_A)

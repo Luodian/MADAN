@@ -24,8 +24,8 @@ def get_transform(opt):
 		transform_list.append(transforms.Resize(osize, interpolation=Image.BICUBIC))
 		transform_list.append(transforms.RandomCrop(opt.fineSize))
 	if opt.resize_or_crop == 'resize_only':
-		osize = [int(opt.loadSize), int(int(opt.loadSize) * 1.8)]
-		transform_list.append(transforms.Resize(osize, interpolation=Image.BICUBIC))
+		osize = [int(opt.loadSize), int(opt.loadSize)]
+		transform_list.append(transforms.Resize(opt.loadSize, interpolation=Image.BICUBIC))
 	elif opt.resize_or_crop == 'crop':
 		transform_list.append(transforms.RandomCrop(opt.fineSize))
 	elif opt.resize_or_crop == 'scale_width':
@@ -33,7 +33,6 @@ def get_transform(opt):
 	elif opt.resize_or_crop == 'scale_width_and_crop':
 		transform_list.append(transforms.Resize(opt.loadSize, interpolation=Image.BICUBIC))
 		transform_list.append(transforms.RandomCrop(opt.fineSize))
-	# transform_list.append(transforms.RandomCrop(opt.fineSize))
 	
 	if opt.isTrain and not opt.no_flip:
 		transform_list.append(transforms.RandomHorizontalFlip())
@@ -51,7 +50,7 @@ def get_label_transform(opt):
 		transform_list.append(transforms.Resize(osize, interpolation=Image.NEAREST))
 		transform_list.append(transforms.RandomCrop(opt.fineSize))
 	elif opt.resize_or_crop == 'resize_only':
-		osize = [int(opt.loadSize), int(int(opt.loadSize) * 1.8)]
+		osize = [opt.loadSize, opt.loadSize]
 		transform_list.append(transforms.Resize(osize, interpolation=Image.NEAREST))
 	elif opt.resize_or_crop == 'crop':
 		transform_list.append(transforms.RandomCrop(opt.fineSize))

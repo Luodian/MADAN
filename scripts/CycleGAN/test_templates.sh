@@ -13,4 +13,4 @@ python3 test.py --name ${name} --resize_or_crop=None \
     --dataset_mode $4 --dataroot /nfs/project/libo_i/cycada/data \
     --which_direction AtoB \
     --phase train --out_all \
-    --how_many ${how_many} --which_epoch ${epoch} --gpu 0,1,2,3
+    --how_many ${how_many} --which_epoch ${epoch} --gpu 0
