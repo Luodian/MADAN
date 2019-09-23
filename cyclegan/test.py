@@ -8,6 +8,7 @@ from util import html
 from util.visualizer import save_images
 
 from data import CreateDataLoader
+import logging
 
 sys.path.append("/nfs/project/libo_i/MADAN")
 
@@ -31,7 +32,7 @@ if __name__ == '__main__':
 		if i == 0:
 			for item in data.items():
 				if isinstance(item[1], torch.Tensor):
-					print(item[0], item[1].size())
+					logging.info(item[0], item[1].size())
 		
 		model.set_input(data)
 		model.test()
@@ -48,7 +49,7 @@ if __name__ == '__main__':
 		
 		img_path = model.get_image_paths()
 		if i % 5 == 0:
-			print('processing (%04d)-th image...' % (i * opt.batchSize))
+			logging.info('processing (%04d)-th image...' % (i * opt.batchSize))
 		if 'mul' in opt.model:
 			save_images(webpage.get_image_dir(), visuals, img_path, aspect_ratio=opt.aspect_ratio, width=opt.display_winsize, multi_flag=True)
 		else:

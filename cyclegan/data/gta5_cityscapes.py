@@ -135,4 +135,4 @@ class GTAVCityscapesDataset(BaseDataset):
 		return max(self.A_size, self.B_size)
 	
 	def name(self):
-		return 'UnalignedDataset'
+		return 'GTA5_Cityscapes'

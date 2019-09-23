@@ -175,4 +175,4 @@ class GTASynthiaCityscapesDataset(BaseDataset):
 		return max(self.A_size_1, self.B_size, self.A_size_2)
 	
 	def name(self):
-		return 'UnalignedDataset'
+		return 'GTA5_Synthia_Cityscapes'

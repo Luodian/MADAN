@@ -20,8 +20,6 @@ class CycleGANSemanticModel(BaseModel):
 		BaseModel.initialize(self, opt)
 		
 		# specify the training losses you want to print out. The program will call base_model.get_current_losses
-		# self.loss_names = ['D_A', 'G_A', 'cycle_A', 'idt_A',
-		#                    'D_B', 'G_B', 'cycle_B', 'idt_B']
 		self.loss_names = ['D_A', 'G_A', 'cycle_A', 'idt_A',
 		                   'D_B', 'G_B', 'cycle_B', 'idt_B',
 		                   'sem_AB']

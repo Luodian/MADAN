@@ -138,4 +138,4 @@ class SynthiaCityscapesDataset(BaseDataset):
 		return max(self.A_size, self.B_size)
 	
 	def name(self):
-		return 'SynthiaCityscapesDataset'
+		return 'Synthia_Cityscapes'
