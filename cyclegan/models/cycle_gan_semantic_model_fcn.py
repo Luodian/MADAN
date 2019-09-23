@@ -34,7 +34,6 @@ class CycleGANSemanticModel(BaseModel):
 		self.visual_names = visual_names_A + visual_names_B
 		# specify the models you want to save to the disk. The program will call base_model.save_networks and base_model.load_networks
 		if self.isTrain:
-			# self.model_names = ['G_A', 'G_B', 'D_A', 'D_B']
 			self.model_names = ['G_A', 'G_B', 'D_A', 'D_B']
 		
 		else:  # during test time, only load Gs
@@ -77,10 +76,7 @@ class CycleGANSemanticModel(BaseModel):
 			self.criterionCycle = torch.nn.L1Loss()
 			self.criterionIdt = torch.nn.L1Loss()
 			# self.criterionCLS = torch.nn.modules.CrossEntropyLoss()
-			if opt.DSC:
-				self.criterionSemantic = torch.nn.KLDivLoss(reduction='mean')
-			else:
-				self.criterionSemantic = torch.nn.NLLLoss(weight=None, reduction='mean', ignore_index=255)
+			self.criterionSemantic = torch.nn.KLDivLoss(reduction='mean')
 			# initialize optimizers
 			self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG_A.parameters(), self.netG_B.parameters()),
 			                                    lr=opt.lr, betas=(opt.beta1, 0.999))
@@ -178,12 +174,8 @@ class CycleGANSemanticModel(BaseModel):
 			if opt.with_label:
 				self.loss_sem_AB = self.criterionSemantic(F.log_softmax(self.pred_fake_B, dim=1), self.input_A_label)
 			else:
-				if opt.DSC:
-					self.loss_sem_AB = opt.DSC_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B, dim=1), F.softmax(self.pred_real_A,
+				self.loss_sem_AB = opt.dynamic_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B, dim=1), F.softmax(self.pred_real_A,
 					                                                                                                             dim=1))
-				else:
-					self.loss_sem_AB = self.criterionSemantic(F.log_softmax(self.pred_fake_B, dim=1), self.gt_pred_A)
-			
 			self.loss_sem_AB = opt.general_semantic_weight * self.loss_sem_AB
 			self.loss_G += self.loss_sem_AB
 		

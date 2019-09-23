@@ -59,6 +59,7 @@ class BaseOptions():
 		self.parser.add_argument('--out_all', action='store_true', help='output all stylized images(fake_B_{})')
 		self.parser.add_argument('--SAD', action='store_true', help='Sub-domain Aggregation Discriminator module')
 		self.parser.add_argument('--CCD', action='store_true', help='Cross-domain Cycle Discriminator module')
+		self.parser.add_argument('--CCD_weight', type=float, default=1, help='weight for cross domain cycle discriminator loss')
 		self.parser.add_argument('--HF_CCD', action='store_true', help='Half Freeze Cross-domain Cycle Discriminator module')
 		self.parser.add_argument('--CCD_frozen_epoch', type=int, default=-1)
 		self.parser.add_argument('--SAD_frozen_epoch', type=int, default=-1)
@@ -68,14 +69,11 @@ class BaseOptions():
 		
 		self.parser.add_argument('--with_label', action='store_true', help='with label')
 
-		self.parser.add_argument('--CCD_weight', type=float, default=1, help='weight for cross domain cycle discriminator loss')
 		self.parser.add_argument('--weights_syn', type=str, default='', help='init weights for synthia')
 		self.parser.add_argument('--weights_gta', type=str, default='', help='init weights for gta')
 		
 		self.parser.add_argument('--inference_script', type=str, default='', help='inference script')
-		self.parser.add_argument('--DSC', action='store_true', help='Use Dynamic Semantic Loss(KL div) to supervise distributions from source to '
-		                                                            'source_stylized images')
-		self.parser.add_argument('--DSC_weight', type=float, default=10, help='Weight for Dynamic Semantic Loss(KL div) loss')
+		self.parser.add_argument('--dynamic_weight', type=float, default=10, help='Weight for Dynamic Semantic Loss(KL div) loss')
 		self.initialized = True
 	
 	def parse(self):
