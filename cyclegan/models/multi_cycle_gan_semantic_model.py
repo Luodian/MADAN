@@ -55,10 +55,13 @@ class CycleGANSemanticModel(BaseModel):
 		# specify the models you want to save to the disk. The program will call base_model.save_networks and base_model.load_networks
 		if self.isTrain:
 			# self.model_names = ['G_A', 'G_B', 'D_A', 'D_B']
-			self.model_names = ['G_A_1', 'G_B_1', 'D_A_1', 'D_B_1', 'G_A_2', 'G_B_2', 'D_A_2', 'D_B_2']
+			if opt.Shared_DT:
+				self.model_names = ['G_A_1', 'G_B_1', 'D_A', 'D_B_1', 'D_B_2', 'G_A_2', 'G_B_2']
+			else:
+				self.model_names = ['G_A_1', 'G_B_1', 'D_A_1', 'D_B_1', 'G_A_2', 'G_B_2', 'D_A_2', 'D_B_2']
 			if opt.SAD:
 				self.model_names.append('D_3')
-		
+			
 			if opt.CCD or opt.HF_CCD:
 				self.model_names.append('D_12')
 				self.model_names.append('D_21')
@@ -96,17 +99,23 @@ class CycleGANSemanticModel(BaseModel):
 		
 		if self.isTrain:
 			use_sigmoid = opt.no_lsgan
-			self.netD_A_1 = networks.define_D(opt.output_nc, opt.ndf,
-			                                  opt.which_model_netD,
-			                                  opt.n_layers_D, opt.norm, use_sigmoid,
-			                                  opt.init_type, self.gpu_ids)
+			if opt.Shared_DT:
+				self.netD_A = networks.define_D(opt.output_nc, opt.ndf,
+				                                opt.which_model_netD,
+				                                opt.n_layers_D, opt.norm, use_sigmoid,
+				                                opt.init_type, self.gpu_ids)
+			else:
+				self.netD_A_1 = networks.define_D(opt.output_nc, opt.ndf,
+				                                  opt.which_model_netD,
+				                                  opt.n_layers_D, opt.norm, use_sigmoid,
+				                                  opt.init_type, self.gpu_ids)
+				
+				self.netD_A_2 = networks.define_D(opt.output_nc, opt.ndf,
+				                                  opt.which_model_netD,
+				                                  opt.n_layers_D, opt.norm, use_sigmoid,
+				                                  opt.init_type, self.gpu_ids)
 			
 			self.netD_B_1 = networks.define_D(opt.input_nc, opt.ndf,
-			                                  opt.which_model_netD,
-			                                  opt.n_layers_D, opt.norm, use_sigmoid,
-			                                  opt.init_type, self.gpu_ids)
-			
-			self.netD_A_2 = networks.define_D(opt.output_nc, opt.ndf,
 			                                  opt.which_model_netD,
 			                                  opt.n_layers_D, opt.norm, use_sigmoid,
 			                                  opt.init_type, self.gpu_ids)
@@ -144,15 +153,19 @@ class CycleGANSemanticModel(BaseModel):
 			self.criterionIdt = torch.nn.L1Loss()
 			self.criterionSemantic = torch.nn.KLDivLoss(reduction='mean')
 			# initialize optimizers
+			if opt.Shared_DT:
+				self.optimizer_D = torch.optim.Adam(itertools.chain(self.netD_A.parameters(), self.netD_B_1.parameters(),
+				                                                    self.netD_B_2.parameters()), lr=opt.lr, betas=(opt.beta1, 0.999))
+			else:
+				self.optimizer_D_1 = torch.optim.Adam(itertools.chain(self.netD_A_1.parameters(), self.netD_B_1.parameters()),
+				                                      lr=opt.lr, betas=(opt.beta1, 0.999))
+				self.optimizer_D_2 = torch.optim.Adam(itertools.chain(self.netD_A_2.parameters(), self.netD_B_2.parameters()),
+				                                      lr=opt.lr, betas=(opt.beta1, 0.999))
+			
 			self.optimizer_G_1 = torch.optim.Adam(itertools.chain(self.netG_A_1.parameters(), self.netG_B_1.parameters()),
-			                                      lr=opt.lr, betas=(opt.beta1, 0.999))
-			self.optimizer_D_1 = torch.optim.Adam(itertools.chain(self.netD_A_1.parameters(), self.netD_B_1.parameters()),
 			                                      lr=opt.lr, betas=(opt.beta1, 0.999))
 			
 			self.optimizer_G_2 = torch.optim.Adam(itertools.chain(self.netG_A_2.parameters(), self.netG_B_2.parameters()),
-			                                      lr=opt.lr, betas=(opt.beta1, 0.999))
-			
-			self.optimizer_D_2 = torch.optim.Adam(itertools.chain(self.netD_A_2.parameters(), self.netD_B_2.parameters()),
 			                                      lr=opt.lr, betas=(opt.beta1, 0.999))
 			
 			if opt.SAD:
@@ -165,8 +178,11 @@ class CycleGANSemanticModel(BaseModel):
 			self.optimizers = []
 			self.optimizers.append(self.optimizer_G_1)
 			self.optimizers.append(self.optimizer_G_2)
-			self.optimizers.append(self.optimizer_D_1)
-			self.optimizers.append(self.optimizer_D_2)
+			if opt.Shared_DT:
+				self.optimizers.append(self.optimizer_D)
+			else:
+				self.optimizers.append(self.optimizer_D_1)
+				self.optimizers.append(self.optimizer_D_2)
 			
 			if opt.SAD:
 				self.optimizers.append(self.optimizer_D_3)
@@ -240,13 +256,19 @@ class CycleGANSemanticModel(BaseModel):
 		loss_D.backward()
 		return loss_D
 	
-	def backward_D_A(self):
+	def backward_D_A(self, Shared_DT):
 		# data 1 A1->B
 		fake_B_1 = self.fake_B_1_pool.query(self.fake_B_1)
-		self.loss_D_A_1 = self.backward_D_basic(self.netD_A_1, self.real_B, fake_B_1)
+		if Shared_DT:
+			self.loss_D_A_1 = self.backward_D_basic(self.netD_A, self.real_B, fake_B_1)
+		else:
+			self.loss_D_A_1 = self.backward_D_basic(self.netD_A_1, self.real_B, fake_B_1)
 		# data 2 A2->B
 		fake_B_2 = self.fake_B_2_pool.query(self.fake_B_2)
-		self.loss_D_A_2 = self.backward_D_basic(self.netD_A_2, self.real_B, fake_B_2)
+		if Shared_DT:
+			self.loss_D_A_2 = self.backward_D_basic(self.netD_A, self.real_B, fake_B_2)
+		else:
+			self.loss_D_A_2 = self.backward_D_basic(self.netD_A_2, self.real_B, fake_B_2)
 	
 	def backward_D_B(self):
 		# data 1 B->A1
@@ -300,8 +322,12 @@ class CycleGANSemanticModel(BaseModel):
 			self.loss_idt_B_1 = 0
 			self.loss_idt_B_2 = 0
 		
-		self.loss_G_A_1 = 2 * self.criterionGAN(self.netD_A_1(self.fake_B_1), True)
-		self.loss_G_A_2 = 2 * self.criterionGAN(self.netD_A_2(self.fake_B_2), True)
+		if opt.Shared_DT:
+			self.loss_G_A_1 = 2 * self.criterionGAN(self.netD_A(self.fake_B_1), True)
+			self.loss_G_A_2 = 2 * self.criterionGAN(self.netD_A(self.fake_B_2), True)
+		else:
+			self.loss_G_A_1 = 2 * self.criterionGAN(self.netD_A_1(self.fake_B_1), True)
+			self.loss_G_A_2 = 2 * self.criterionGAN(self.netD_A_2(self.fake_B_2), True)
 		
 		# GAN loss D_B(G_B(B))
 		self.loss_G_B_1 = self.criterionGAN(self.netD_B_1(self.fake_A_1), True)
@@ -349,9 +375,9 @@ class CycleGANSemanticModel(BaseModel):
 			
 			else:
 				self.loss_sem_syn = opt.dynamic_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B_SYN, dim=1),
-					                                                            F.softmax(self.pred_real_A_SYN, dim=1))
+				                                                                F.softmax(self.pred_real_A_SYN, dim=1))
 				self.loss_sem_gta = opt.dynamic_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B_GTA, dim=1),
-					                                                            F.softmax(self.pred_real_A_GTA, dim=1))
+				                                                                F.softmax(self.pred_real_A_GTA, dim=1))
 			self.loss_G += opt.general_semantic_weight * self.loss_sem_syn
 			self.loss_G += opt.general_semantic_weight * self.loss_sem_gta
 		
@@ -388,8 +414,11 @@ class CycleGANSemanticModel(BaseModel):
 		self.forward(opt)
 		# G_A and G_B
 		# set D to false, back prop G's gradients
-		self.set_requires_grad([self.netD_A_1, self.netD_B_1], False)
-		self.set_requires_grad([self.netD_A_2, self.netD_B_2], False)
+		if opt.Shared_DT:
+			self.set_requires_grad([self.netD_A, self.netD_B_1, self.netD_B_2], False)
+		else:
+			self.set_requires_grad([self.netD_A_1, self.netD_B_1], False)
+			self.set_requires_grad([self.netD_A_2, self.netD_B_2], False)
 		
 		if opt.SAD:
 			self.set_requires_grad([self.netD_3], False)
@@ -419,15 +448,25 @@ class CycleGANSemanticModel(BaseModel):
 			self.optimizer_G_2.step()
 		
 		# D_A and D_B
-		self.set_requires_grad([self.netD_A_1, self.netD_B_1], True)
-		self.set_requires_grad([self.netD_A_2, self.netD_B_2], True)
+		if opt.Shared_DT:
+			self.set_requires_grad([self.netD_A, self.netD_B_1, self.netD_B_2], True)
+		else:
+			self.set_requires_grad([self.netD_A_1, self.netD_B_1], True)
+			self.set_requires_grad([self.netD_A_2, self.netD_B_2], True)
 		
-		self.optimizer_D_1.zero_grad()
-		self.optimizer_D_2.zero_grad()
+		if opt.Shared_DT:
+			self.optimizer_D.zero_grad()
+		else:
+			self.optimizer_D_1.zero_grad()
+			self.optimizer_D_2.zero_grad()
+		
 		self.backward_D_B()
-		self.backward_D_A()
-		self.optimizer_D_1.step()
-		self.optimizer_D_2.step()
+		self.backward_D_A(opt.Shared_DT)
+		if opt.Shared_DT:
+			self.optimizer_D.step()
+		else:
+			self.optimizer_D_1.step()
+			self.optimizer_D_2.step()
 		
 		if opt.SAD:
 			self.set_requires_grad([self.netD_3], True)

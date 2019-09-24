@@ -63,7 +63,8 @@ class BaseOptions():
 		self.parser.add_argument('--HF_CCD', action='store_true', help='Half Freeze Cross-domain Cycle Discriminator module')
 		self.parser.add_argument('--CCD_frozen_epoch', type=int, default=-1)
 		self.parser.add_argument('--SAD_frozen_epoch', type=int, default=-1)
-		
+		self.parser.add_argument('--Shared_DT', type=bool, default=True, help="Through ")
+	
 		self.parser.add_argument('--semantic_loss', action='store_true', help='use semantic loss')
 		self.parser.add_argument('--general_semantic_weight', type=float, default=0.2, help='weight for semantic loss')
 		
