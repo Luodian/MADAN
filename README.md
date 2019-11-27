@@ -1,6 +1,17 @@
 # MADAN
 
-A Pytorch Code for "Multi-source Domain Adaptation for Semantic Segmentation"
+A Pytorch Code for [Multi-source Domain Adaptation for Semantic Segmentation](https://arxiv.org/abs/1910.12181)
+
+If you use this code in your research please consider citing:
+
+```
+@InProceedings{zhao2019madan,
+   title = {Multi-source Domain Adaptation for Semantic Segmentation},
+   author = {Zhao, Sicheng and Li, Bo and Yue, Xiangyu and Gu, Yang and Xu, Pengfei and Tan, Hu, Runbo and Chai, Hua and   Keutzer, Kurt},
+   booktitle = {Advances in Neural Information Processing Systems},
+   year = {2019}
+}
+```
 
 ## Quick Look
 
