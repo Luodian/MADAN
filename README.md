@@ -60,6 +60,8 @@ bash scripts/CycleGAN/test_templates.sh [EXP_NAME] 20 cycle_gan_semantic_fcn gta
 
 In multi-source case, there are both `20_net_G_A_1.pth` and `20_net_G_A_2.pth` exist. We use another script to run test process.
 
+![image-20190608111738818](https://tva1.sinaimg.cn/large/006y8mN6ly1g9cqrscgosj31r40e8jx4.jpg)
+
 ```bash
 bash scripts/CycleGAN/test_templates_cycle.sh [EXP_NAME] 20 test synthia_cityscapes gta5_cityscapes
 ```
