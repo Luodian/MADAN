@@ -44,7 +44,7 @@ Install Python3 requirements
 pip3 install -r requirements.txt
 ```
 
-## Dynamic Adversarial Image Generation Part
+## Dynamic Adversarial Image Generation
 
 We follow the way in CyCADA, in the first step, we need to train Image Adaptation module to transfer source image(GTA, Synthia or Multi-source) to "source as target".
 
@@ -71,7 +71,7 @@ bash scripts/CycleGAN/test_templates.sh [EXP_NAME] 20 cycle_gan_semantic_fcn gta
 
 In multi-source case, there are both `20_net_G_A_1.pth` and `20_net_G_A_2.pth` exist. We use another script to run test process.
 
-![image-20190608111738818](https://tva1.sinaimg.cn/large/006y8mN6ly1g9cqrscgosj31r40e8jx4.jpg)
+![image](https://tva1.sinaimg.cn/large/006y8mN6ly1g9cqt9m2kmj31j80skgsh.jpg)
 
 ```bash
 bash scripts/CycleGAN/test_templates_cycle.sh [EXP_NAME] 20 test synthia_cityscapes gta5_cityscapes
@@ -81,7 +81,7 @@ New dataset will be generated at `~/cyclegan/results/[EXP_NAME]/train_20`.
 
 After we obtain a new source stylized dataset, we then train segmenter on the new dataset.
 
-## Pixel Level Adaptation Part
+## Pixel Level Adaptation
 
 In this part, we train our new segmenter on new dataset.
 
@@ -95,7 +95,7 @@ Then we set `dataflag = [EXP_NAME]_TRAIN_60` to find datasets' paths, and follow
 bash scripts/FCN/train_fcn8s_cyclesgta5_DSC.sh
 ```
 
-## Feature Level Adaptation Part
+## Feature Level Adaptation
 
 For adaptation, we use
 
@@ -109,9 +109,9 @@ Make sure you choose the desired `src` and `tgt` and `datadir` before. In this p
 
 We release our adaptation model in the `./models`, you can use `scripts/eval_templates.sh` to evaluate its validity.
 
-1. CycleGTA5_Dynamic_Semantic_Consistency
-2. CycleSYNTHIA_Dynamic_Semantic_Consistency
-3. Multi_Source_SAD_CCD
+1. [CycleGTA5_Dynamic_Semantic_Consistency](https://www.dropbox.com/s/3iukj8kgul4ainz/CycleGTA5_DSC_iter_2000.pth?dl=0)
+2. [CycleSYNTHIA_Dynamic_Semantic_Consistency](https://www.dropbox.com/s/fpghkv9cdrw05k2/CycleSYNTHIA_DSC_iter_10000.pth?dl=0)
+3. [Multi_Source_SAD_CCD](https://www.dropbox.com/s/1d6niyq53narsyh/Multi_Source_SAD_CCD_iter6000.pth?dl=0)
 
 ### Transfered Dataset
 
