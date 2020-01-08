@@ -369,15 +369,10 @@ class CycleGANSemanticModel(BaseModel):
 				self.loss_G_s2s12 = 0
 		
 		if opt.semantic_loss:
-			if opt.with_label:
-				self.loss_sem_syn = self.criterionSemantic(F.log_softmax(self.pred_fake_B_SYN, dim=1), self.input_A_label_1)
-				self.loss_sem_gta = self.criterionSemantic(F.log_softmax(self.pred_fake_B_GTA, dim=1), self.input_A_label_2)
-			
-			else:
-				self.loss_sem_syn = opt.dynamic_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B_SYN, dim=1),
-				                                                                F.softmax(self.pred_real_A_SYN, dim=1))
-				self.loss_sem_gta = opt.dynamic_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B_GTA, dim=1),
-				                                                                F.softmax(self.pred_real_A_GTA, dim=1))
+			self.loss_sem_syn = opt.dynamic_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B_SYN, dim=1),
+			                                                                F.softmax(self.pred_real_A_SYN, dim=1))
+			self.loss_sem_gta = opt.dynamic_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B_GTA, dim=1),
+			                                                                F.softmax(self.pred_real_A_GTA, dim=1))
 			self.loss_G += opt.general_semantic_weight * self.loss_sem_syn
 			self.loss_G += opt.general_semantic_weight * self.loss_sem_gta
 		

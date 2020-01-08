@@ -76,7 +76,7 @@ class CycleGANSemanticModel(BaseModel):
 			self.criterionCycle = torch.nn.L1Loss()
 			self.criterionIdt = torch.nn.L1Loss()
 			# self.criterionCLS = torch.nn.modules.CrossEntropyLoss()
-			self.criterionSemantic = torch.nn.KLDivLoss(reduction='batchmean')
+			self.criterionSemantic = torch.nn.KLDivLoss(reduction='mean')
 			# initialize optimizers
 			self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG_A.parameters(), self.netG_B.parameters()),
 			                                    lr=opt.lr, betas=(opt.beta1, 0.999))
@@ -171,11 +171,8 @@ class CycleGANSemanticModel(BaseModel):
 		
 		# real_A(syn)->fake_B->(fcn_frozen)->pred_fake_B == input_A_label
 		if opt.semantic_loss:
-			if opt.with_label:
-				self.loss_sem_AB = self.criterionSemantic(F.log_softmax(self.pred_fake_B, dim=1), self.input_A_label)
-			else:
-				self.loss_sem_AB = opt.dynamic_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B, dim=1), F.softmax(self.pred_real_A,
-					                                                                                                             dim=1))
+			self.loss_sem_AB = opt.dynamic_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B, dim=1), F.softmax(self.pred_real_A,
+			                                                                                                                 dim=1))
 			self.loss_sem_AB = opt.general_semantic_weight * self.loss_sem_AB
 			self.loss_G += self.loss_sem_AB
 		

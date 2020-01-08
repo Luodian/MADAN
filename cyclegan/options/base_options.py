@@ -67,9 +67,6 @@ class BaseOptions():
 		self.parser.add_argument('--model_type', type=str, default='fcn8s', help="choose to load which type of model (fcn8s, drn26, deeplabv2)")
 		self.parser.add_argument('--semantic_loss', action='store_true', help='use semantic loss')
 		self.parser.add_argument('--general_semantic_weight', type=float, default=0.2, help='weight for semantic loss')
-		
-		self.parser.add_argument('--with_label', action='store_true', help='with label')
-
 		self.parser.add_argument('--weights_syn', type=str, default='', help='init weights for synthia')
 		self.parser.add_argument('--weights_gta', type=str, default='', help='init weights for gta')
 		
