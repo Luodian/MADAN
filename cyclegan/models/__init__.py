@@ -13,7 +13,7 @@ def create_model(opt):
 		from .multi_cycle_gan_semantic_model import CycleGANSemanticModel
 		model = CycleGANSemanticModel()
 	elif opt.model == 'cycle_gan_semantic_fcn':
-		from .cycle_gan_semantic_model_fcn import CycleGANSemanticModel
+		from .cycle_gan_semantic_model import CycleGANSemanticModel
 		model = CycleGANSemanticModel()
 	else:
 		raise NotImplementedError('model [%s] not implemented.' % opt.model)

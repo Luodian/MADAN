@@ -151,7 +151,7 @@ class CycleGANSemanticModel(BaseModel):
 			self.criterionGAN = networks.GANLoss(use_lsgan=not opt.no_lsgan).to(self.device)
 			self.criterionCycle = torch.nn.L1Loss()
 			self.criterionIdt = torch.nn.L1Loss()
-			self.criterionSemantic = torch.nn.KLDivLoss(reduction='mean')
+			self.criterionSemantic = torch.nn.KLDivLoss(reduction='batchmean')
 			# initialize optimizers
 			if opt.Shared_DT:
 				self.optimizer_D = torch.optim.Adam(itertools.chain(self.netD_A.parameters(), self.netD_B_1.parameters(),
