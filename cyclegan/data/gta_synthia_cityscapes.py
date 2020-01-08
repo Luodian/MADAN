@@ -71,7 +71,6 @@ class GTASynthiaCityscapesDataset(BaseDataset):
 		self.dir_B = os.path.join(opt.dataroot, 'cityscapes', 'leftImg8bit')
 		self.dir_A_label_1 = os.path.join(opt.dataroot, 'synthia', 'GT', 'parsed_LABELS')
 		self.dir_A_label_2 = os.path.join(opt.dataroot, 'gta5', 'labels')
-		self.dir_B_label = os.path.join(opt.dataroot, 'cityscapes', 'gtFine')
 		
 		self.A_paths_1 = make_dataset(self.dir_A_1)
 		self.A_paths_2 = make_dataset(self.dir_A_2)
@@ -90,11 +89,8 @@ class GTASynthiaCityscapesDataset(BaseDataset):
 		self.A_labels_1 = make_dataset(self.dir_A_label_1)
 		self.A_labels_2 = make_dataset(self.dir_A_label_2)
 		
-		self.B_labels = make_cs_labels(self.dir_B_label)
-		
 		self.A_labels_1 = sorted(self.A_labels_1)
 		self.A_labels_2 = sorted(self.A_labels_2)
-		self.B_labels = sorted(self.B_labels)
 		
 		self.transform = get_transform(opt)
 		self.label_transform = get_label_transform(opt)
@@ -113,12 +109,8 @@ class GTASynthiaCityscapesDataset(BaseDataset):
 		A_label_path_1 = self.A_labels_1[index % self.A_size_1]
 		A_label_path_2 = self.A_labels_2[index % self.A_size_2]
 		
-		B_label_path = self.B_labels[index_B]
-		
 		A_label_1 = Image.open(A_label_path_1)
 		A_label_2 = Image.open(A_label_path_2)
-		
-		B_label = Image.open(B_label_path)
 		
 		# remaping label for synthia
 		A_label_1 = np.asarray(A_label_1)
@@ -130,10 +122,6 @@ class GTASynthiaCityscapesDataset(BaseDataset):
 		A_label_2 = np.asarray(A_label_2)
 		A_label_2 = remap_labels_to_train_ids(A_label_2)
 		A_label_2 = Image.fromarray(A_label_2, 'L')
-		
-		B_label = np.asarray(B_label)
-		B_label = remap_labels_to_train_ids(B_label)
-		B_label = Image.fromarray(B_label, 'L')
 		
 		A_img_1 = Image.open(A_path_1).convert('RGB')
 		A_img_2 = Image.open(A_path_2).convert('RGB')
@@ -147,8 +135,6 @@ class GTASynthiaCityscapesDataset(BaseDataset):
 		
 		A_label_1 = self.label_transform(A_label_1)
 		A_label_2 = self.label_transform(A_label_2)
-		
-		B_label = self.label_transform(B_label)
 		
 		if self.opt.which_direction == 'BtoA':
 			input_nc = self.opt.output_nc
@@ -169,7 +155,7 @@ class GTASynthiaCityscapesDataset(BaseDataset):
 			B = tmp.unsqueeze(0)
 		
 		return {'A_1': A_1, 'A_2': A_2, 'B': B, 'A_paths_1': A_path_1, 'A_paths_2': A_path_2, 'B_paths': B_path, 'A_label_1': A_label_1,
-		        'A_label_2': A_label_2, 'B_label': B_label}
+		        'A_label_2': A_label_2}
 	
 	def __len__(self):
 		return max(self.A_size_1, self.B_size, self.A_size_2)
