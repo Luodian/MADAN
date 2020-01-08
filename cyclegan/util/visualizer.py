@@ -3,8 +3,6 @@ import os
 import time
 
 import numpy as np
-from scipy.misc import imresize
-
 from . import html, util
 
 
@@ -22,10 +20,6 @@ def save_images(image_dir, visuals, image_path, aspect_ratio=1.0, width=256, mul
 			image_name = '%s_%s.png' % (name, label)
 			save_path = os.path.join(image_dir, image_name)
 			h, w, _ = im.shape
-			if aspect_ratio > 1.0:
-				im = imresize(im, (h, int(w * aspect_ratio)), interp='bicubic')
-			if aspect_ratio < 1.0:
-				im = imresize(im, (int(h / aspect_ratio), w), interp='bicubic')
 			util.save_image(im, save_path)
 
 
