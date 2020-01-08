@@ -61,7 +61,7 @@ class CycleGANSemanticModel(BaseModel):
 			                                opt.init_type, self.gpu_ids)
 			
 			# Here for semantic consistency loss, load a fcn network as fs here.
-			self.netPixelCLS = get_model(opt.fcn_model, num_cls=opt.num_cls, pretrained=True, weights_init=opt.weights_init)
+			self.netPixelCLS = get_model(opt.model_type, num_cls=opt.num_cls, pretrained=True, weights_init=opt.weights_init)
 			# Specially initialize Pixel CLS network
 			if len(self.gpu_ids) > 0:
 				assert (torch.cuda.is_available())
