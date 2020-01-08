@@ -373,8 +373,10 @@ class CycleGANSemanticModel(BaseModel):
 			                                                                F.softmax(self.pred_real_A_SYN, dim=1))
 			self.loss_sem_gta = opt.dynamic_weight * self.criterionSemantic(F.log_softmax(self.pred_fake_B_GTA, dim=1),
 			                                                                F.softmax(self.pred_real_A_GTA, dim=1))
-			self.loss_G += opt.general_semantic_weight * self.loss_sem_syn
-			self.loss_G += opt.general_semantic_weight * self.loss_sem_gta
+			self.loss_G += opt.general_semantic_weight * torch.div(self.loss_sem_syn, self.pred_fake_B_SYN.shape[1] * self.pred_fake_B_SYN.shape[2]
+			                                                       * self.pred_fake_B_SYN.shape[3])
+			self.loss_G += opt.general_semantic_weight * torch.div(self.loss_sem_gta, self.pred_fake_B_GTA.shape[1] * self.pred_fake_B_GTA.shape[2]
+			                                                       * self.pred_fake_B_GTA.shape[3])
 		
 		self.loss_G.backward()
 	
