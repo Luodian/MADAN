@@ -56,7 +56,7 @@ We refer Image Adaptation module from GTA to Cityscapes as GTA->Cityscapes in th
 
 ```bash
 cd scripts/CycleGAN
-bash train_cycada_gta_cityscapes_A2B_SEM_KL.sh
+bash cyclegan_gta_synthia2cityscapes.sh
 ```
 
 In the training process, snapshot files will be stored in `cyclegan/checkpoints/[EXP_NAME]`.
