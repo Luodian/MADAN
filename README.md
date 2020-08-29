@@ -109,9 +109,9 @@ Make sure you choose the desired `src` and `tgt` and `datadir` before. In this p
 
 We release our adaptation model in the `./models`, you can use `scripts/eval_templates.sh` to evaluate its validity.
 
-1. [CycleGTA5_Dynamic_Semantic_Consistency](https://www.dropbox.com/s/3iukj8kgul4ainz/CycleGTA5_DSC_iter_2000.pth?dl=0)
-2. [CycleSYNTHIA_Dynamic_Semantic_Consistency](https://www.dropbox.com/s/fpghkv9cdrw05k2/CycleSYNTHIA_DSC_iter_10000.pth?dl=0)
-3. [Multi_Source_SAD_CCD](https://www.dropbox.com/s/1d6niyq53narsyh/Multi_Source_SAD_CCD_iter6000.pth?dl=0)
+1. [CycleGTA5_Dynamic_Semantic_Consistency](https://drive.google.com/file/d/1moGF7L2hkTHUPUzqsSxPwKNlHCHQm4Ms/view?usp=sharing)
+2. [CycleSYNTHIA_Dynamic_Semantic_Consistency](https://drive.google.com/file/d/19V5J1zyF3ct3247gSSr-u3WVkDJqQvUk/view?usp=sharing)
+3. [Multi_Source_SAD_CCD](https://drive.google.com/file/d/1xgmLwhsbwv-isy7R5FkNevVSH9gcMxuq/view?usp=sharing)
 
 ### Transfered Dataset
 
